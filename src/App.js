@@ -1,25 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import "./App.css";
+import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Books from "./containers/Books";
+import CreateBook from "./containers/CreateBook";
+import { history } from "./index";
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      book: null,
+    };
+
+    this.onEdit = this.onEdit.bind(this);
+  }
+
+  onEdit(book) {
+    this.setState({ book: book });
+    history.push({
+      pathname: `/edit/${book.id}`,
+      state: {
+        book: book,
+      },
+    });
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <Route
+          path="/"
+          exact
+          render={(props) => <Books {...props} onEdit={this.onEdit} />}
+        />
+        <Route
+          path="/create/"
+          render={(props) => <CreateBook {...props} book={this.state.book} />}
+        />
+        <Route
+          path="/edit/:id"
+          render={(props) => <CreateBook {...props} book={this.state.book} />}
+        />
+      </div>
+    );
+  }
 }
 
 export default App;
